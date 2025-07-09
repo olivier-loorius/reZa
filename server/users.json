@@ -1,0 +1,47 @@
+[
+  {
+    "name": "Victor",
+    "email": "victor@react.com",
+    "password": "$2b$10$QRieEL9RyCEgrVYLxRFZluG7n6JSWUk7f6q3k1z5.Jlr56Iw267YC"
+  },
+  {
+    "name": "Olivier",
+    "email": "olivier@react.com",
+    "password": "$2b$10$eRGkQL0gRLekCHfonyNC8uPCaLj6FEeqH8B8AOZ54H/u7xGpOoCYq"
+  },
+  {
+    "name": "Gabin",
+    "email": "gabin@react.com",
+    "password": "$2b$10$JScILnLQBRmavfkRAs3z9OrsA0ZRg4vmSoaWE9zQbNrcJwxU0gbXu"
+  },
+  {
+    "name": "Titi",
+    "email": "titi@react.com",
+    "password": "$2b$10$lESj6TJrPO/ixLlnyPTRC.s3tGGuR2vj3nnBYokaWBTu57PXevTD6"
+  },
+  {
+    "name": "Toto",
+    "email": "toto@react.com",
+    "password": "$2b$10$LUS3tlzYz2T2O7N7mnsDPeOZidg9ijQHPhJtHuXiYFUg24tv3iGle"
+  },
+  {
+    "name": "Tata",
+    "email": "tata@react.com",
+    "password": "$2b$10$gCv6IFHfPNMQp7zhadJKDOC1.z29DbZn96nR5/zU1772ChfROkfxS"
+  },
+  {
+    "name": "Tutu",
+    "email": "tutu@react.com",
+    "password": "$2b$10$25rTzsa6VobsxQgkoJKgIuLxbB552/U3USKp9sWegIVqKErFMyGre"
+  },
+  {
+    "name": "Fifi",
+    "email": "fifi@react.com",
+    "password": "$2b$10$GYfrDyIQZFFpi0CudAtIY.jBqdlFG/3t4hjCXjQs2I7CbueMjAEL6"
+  },
+  {
+    "name": "Fafa",
+    "email": "fafa@react.com",
+    "password": "$2b$10$hiuDqzpNj9NnQ7C2XP04aOOp6f0RinvVtFcCbhtKmAnr2zAfgkEXq"
+  }
+]

@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: SIZES.title,
-    fontWeight: '900', // plus en gras
+    fontWeight: '900', 
     marginBottom: 6,
     color: COLORS.text,
     textAlign: 'center',
@@ -72,8 +72,8 @@ const styles = StyleSheet.create({
   },
   ctaText: {
     color: '#222',
-    fontWeight: '900', // plus en gras
-    fontSize: SIZES.button + 6, // un peu plus grand
+    fontWeight: '900', 
+    fontSize: SIZES.button + 6, 
     letterSpacing: 2,
     fontFamily: FONTS.bold,
   },

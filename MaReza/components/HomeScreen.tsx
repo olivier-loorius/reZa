@@ -4,9 +4,10 @@ import { COLORS, FONTS, SIZES } from '../theme';
 
 interface HomeScreenProps {
   onGo: () => void;
+  onRooms: () => void;
 }
 
-const HomeScreen: React.FC<HomeScreenProps> = ({ onGo }) => {
+const HomeScreen: React.FC<HomeScreenProps> = ({ onGo, onRooms }) => {
   return (
     <View style={styles.container}>
       <Image
@@ -15,12 +16,17 @@ const HomeScreen: React.FC<HomeScreenProps> = ({ onGo }) => {
         resizeMode="contain"
       />
       <View style={styles.centerContent}>
-        <Text style={styles.title}>Bienvenue sur RéZa !</Text>
+        <Text style={styles.title}>Bienvenue sur RéZa !</Text>
         <Text style={styles.subtitle}>L'appli pour réserver la salle qui te faut</Text>
       </View>
-      <TouchableOpacity style={styles.ctaAccueil} onPress={onGo}>
-        <Text style={styles.ctaText}>GO !</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={styles.ctaAccueil} onPress={onGo}>
+          <Text style={styles.ctaText}>Se connecter</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.roomsButton} onPress={onRooms}>
+          <Text style={styles.roomsButtonText}>Nos salles</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -61,20 +67,41 @@ const styles = StyleSheet.create({
     marginBottom: 18,
     fontFamily: FONTS.regular,
   },
+  buttonContainer: {
+    alignItems: 'center',
+    marginTop: 80,
+  },
   ctaAccueil: {
     backgroundColor:'#57cc99',
-    paddingVertical: 14,
-    paddingHorizontal: 50,
-    borderRadius: SIZES.borderRadiusLarge,
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    borderRadius: SIZES.borderRadius,
     elevation: 2,
     alignSelf: 'center',
-    marginTop: 100, 
+    marginBottom: 20,
+    width: 200,
+    alignItems: 'center',
   },
   ctaText: {
     color: '#222',
-    fontWeight: '900', 
-    fontSize: SIZES.button + 6, 
-    letterSpacing: 2,
+    fontWeight: 'bold',
+    fontSize: 18,
+    fontFamily: FONTS.bold,
+  },
+  roomsButton: {
+    backgroundColor: COLORS.primary,
+    paddingVertical: 12,
+    paddingHorizontal: 40,
+    borderRadius: SIZES.borderRadius,
+    elevation: 2,
+    alignSelf: 'center',
+    width: 200,
+    alignItems: 'center',
+  },
+  roomsButtonText: {
+    color: COLORS.accent,
+    fontWeight: 'bold',
+    fontSize: 18,
     fontFamily: FONTS.bold,
   },
 }); 

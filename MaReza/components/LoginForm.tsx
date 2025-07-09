@@ -6,17 +6,21 @@ import { COLORS, FONTS, SIZES } from '../theme';
 
 interface LoginFormProps {
   onBack: () => void;
+  onLoginSuccess: () => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ onBack }) => {
+const LoginForm: React.FC<LoginFormProps> = ({ onBack, onLoginSuccess }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState<'success' | 'error' | ''>('');
   const [showPassword, setShowPassword] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const handleLogin = async () => {
+    if (isRedirecting) return; // Éviter les appels multiples
+    
     try {
       const response = await fetch('http://192.168.1.12:3001/login', {
         method: 'POST',
@@ -25,9 +29,16 @@ const LoginForm: React.FC<LoginFormProps> = ({ onBack }) => {
       });
       const data = await response.json();
       if (data.success) {
+        console.log('Connexion réussie, redirection vers les salles...');
         setMessage('Connexion réussie !');
         setMessageType('success');
         await SecureStore.setItemAsync('user', JSON.stringify(data.user));
+        
+        // Rediriger immédiatement vers la page des salles
+        setIsRedirecting(true);
+        console.log('Appel de onLoginSuccess...');
+        onLoginSuccess();
+        console.log('onLoginSuccess appelé');
       } else {
         if (data.message === 'Mot de passe incorrect') {
           setMessage('Mot de passe incorrect ou utilisateur non enregistré.');

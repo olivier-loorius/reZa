@@ -5,12 +5,16 @@ import * as SplashScreen from 'expo-splash-screen';
 import SplashScreenComponent from './components/SplashScreen';
 import HomeScreen from './components/HomeScreen';
 import LoginForm from './components/LoginForm';
+import RoomsScreen from './components/RoomsScreen';
+import CreateRoomForm from './components/CreateRoomForm';
 
 SplashScreen.preventAutoHideAsync();
 
 const App: React.FC = () => {
   const [fontsLoaded, setFontsLoaded] = useState<boolean>(false);
   const [showLogin, setShowLogin] = useState<boolean>(false);
+  const [showRooms, setShowRooms] = useState<boolean>(false);
+  const [showCreateRoom, setShowCreateRoom] = useState<boolean>(false);
   const [showPreload, setShowPreload] = useState<boolean>(true);
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
@@ -34,15 +38,41 @@ const App: React.FC = () => {
     }
   }, [fontsLoaded]);
 
+  const handleLogout = () => {
+    setShowRooms(false);
+    setShowLogin(false);
+    setShowCreateRoom(false);
+  };
+
   if (!fontsLoaded || showPreload) {
     return <SplashScreenComponent fadeAnim={fadeAnim} />;
   }
 
   if (showLogin) {
-    return <LoginForm onBack={() => setShowLogin(false)} />;
+    return <LoginForm 
+      onBack={() => setShowLogin(false)} 
+      onLoginSuccess={() => {
+        console.log('onLoginSuccess appelé dans App.tsx, redirection vers les salles');
+        setShowLogin(false);
+        setShowRooms(true);
+      }} 
+    />;
   }
 
-  return <HomeScreen onGo={() => setShowLogin(true)} />;
+  if (showCreateRoom) {
+    return <CreateRoomForm onBack={() => setShowCreateRoom(false)} />;
+  }
+
+  if (showRooms) {
+    return <RoomsScreen 
+      onBack={() => setShowRooms(false)} 
+      onLogout={handleLogout}
+      onCreateRoom={() => setShowCreateRoom(true)}
+      onGoToLogin={() => setShowLogin(true)}
+    />;
+  }
+
+  return <HomeScreen onGo={() => setShowLogin(true)} onRooms={() => setShowRooms(true)} />;
 };
 
 export default App; 

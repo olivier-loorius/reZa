@@ -43,5 +43,15 @@
     "name": "Fafa",
     "email": "fafa@react.com",
     "password": "$2b$10$hiuDqzpNj9NnQ7C2XP04aOOp6f0RinvVtFcCbhtKmAnr2zAfgkEXq"
+  },
+  {
+    "name": "Gaga",
+    "email": "gaga@react.com",
+    "password": "$2b$10$Y2znaDHIIfYOpeiLEDA.3ehM4yyVDsjpfgaDmtVtsOLkjKfYJ0J5u"
+  },
+  {
+    "name": "Maurice",
+    "email": "maurice@react.com",
+    "password": "$2b$10$DLsodpz0X1NLBd5OsyYoJeS1R5YpyKnv2tl9xmPIQvWBnOPaX1KwC"
   }
 ]

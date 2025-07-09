@@ -1,0 +1,56 @@
+[
+  {
+    "id": "1752096537136",
+    "name": "Maurice",
+    "capacity": "12",
+    "equipment": [
+      "Vidéo projecteur",
+      "Climatisé",
+      "Tableau",
+      "Câblé"
+    ],
+    "customEquipment": [
+      "Chaises",
+      "Une cafetière"
+    ],
+    "createdAt": "2025-07-09T21:28:57.137Z"
+  },
+  {
+    "id": "1752096581545",
+    "name": "Aurel",
+    "capacity": "4",
+    "equipment": [
+      "Tableau"
+    ],
+    "customEquipment": [],
+    "createdAt": "2025-07-09T21:29:41.545Z"
+  },
+  {
+    "id": "1752096918546",
+    "name": "Vivi",
+    "capacity": "28",
+    "equipment": [
+      "Vidéo projecteur",
+      "Tableau"
+    ],
+    "customEquipment": [],
+    "createdAt": "2025-07-09T21:35:18.546Z"
+  },
+  {
+    "id": "1752096973941",
+    "name": "Popo",
+    "capacity": "36",
+    "equipment": [
+      "Vidéo projecteur",
+      "Climatisé",
+      "Tableau",
+      "Câblé"
+    ],
+    "customEquipment": [
+      "Terrasse",
+      "WC",
+      "Canapé"
+    ],
+    "createdAt": "2025-07-09T21:36:13.941Z"
+  }
+]

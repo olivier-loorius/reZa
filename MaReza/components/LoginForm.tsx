@@ -44,10 +44,10 @@ const styles = StyleSheet.create({
   formContainer: {
     flex: 1,
     backgroundColor: COLORS.background,
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     alignItems: 'center',
     paddingHorizontal: 24,
-    paddingTop: 40,
+    paddingTop: 60, // même que sur l'accueil
   },
   backButtonContainer: {
     position: 'absolute',
@@ -66,8 +66,9 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
   },
   logoForm: {
-    width: SIZES.logoForm,
-    height: SIZES.logoForm,
+    width: 250,
+    height: 250,
+    marginTop: 0,
     marginBottom: 10,
   },
   loginTitle: {

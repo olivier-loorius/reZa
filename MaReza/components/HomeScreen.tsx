@@ -37,17 +37,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   logoAccueil: {
-    width: SIZES.logo,
-    height: SIZES.logo,
-    marginBottom: 18,
+    width:250,
+    height: 250,
+    marginBottom: 10,
   },
   centerContent: {
     marginBottom: 10,
     alignItems: 'center',
+    flex: 1,
+    width: '100%',
+    justifyContent: 'flex-start',
   },
   title: {
     fontSize: SIZES.title,
-    fontWeight: 'bold',
+    fontWeight: '900', // plus en gras
     marginBottom: 6,
     color: COLORS.text,
     textAlign: 'center',
@@ -61,18 +64,19 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
   },
   ctaAccueil: {
-    backgroundColor: COLORS.primary,
+    backgroundColor:'#57cc99',
     paddingVertical: 14,
     paddingHorizontal: 50,
     borderRadius: SIZES.borderRadiusLarge,
-    marginBottom: 30,
+    marginBottom: 600,
     elevation: 2,
     alignSelf: 'center',
+    marginTop: 100, 
   },
   ctaText: {
-    color: COLORS.accent,
-    fontWeight: 'bold',
-    fontSize: SIZES.button,
+    color: '#222',
+    fontWeight: '900', // plus en gras
+    fontSize: SIZES.button + 6, // un peu plus grand
     letterSpacing: 2,
     fontFamily: FONTS.bold,
   },

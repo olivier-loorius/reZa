@@ -11,6 +11,7 @@ app.use(express.json());
 
 const USERS_FILE = path.join(__dirname, 'users.json');
 const ROOMS_FILE = path.join(__dirname, 'rooms.json');
+const RESERVATIONS_FILE = path.join(__dirname, 'reservations.json');
 
 function readUsers() {
   try {
@@ -36,6 +37,19 @@ function readRooms() {
 
 function writeRooms(rooms) {
   fs.writeFileSync(ROOMS_FILE, JSON.stringify(rooms, null, 2));
+}
+
+function readReservations() {
+  try {
+    const data = fs.readFileSync(RESERVATIONS_FILE, 'utf8');
+    return JSON.parse(data);
+  } catch (err) {
+    return [];
+  }
+}
+
+function writeReservations(reservations) {
+  fs.writeFileSync(RESERVATIONS_FILE, JSON.stringify(reservations, null, 2));
 }
 
 app.post('/login', async (req, res) => {
@@ -81,7 +95,8 @@ app.get('/rooms', (req, res) => {
 // Créer une nouvelle salle
 app.post('/rooms', (req, res) => {
   try {
-    const { name, capacity, equipment, customEquipment, description } = req.body;
+    console.log('Body reçu pour création de salle :', req.body);
+    const { name, capacity, equipment, customEquipment, description, floor } = req.body;
     
     if (!name || !capacity) {
       return res.status(400).json({ message: 'Nom et capacité requis' });
@@ -95,6 +110,7 @@ app.post('/rooms', (req, res) => {
       equipment: equipment || [],
       customEquipment: customEquipment || [],
       description: description ? description.trim() : undefined,
+      floor: floor || undefined,
       createdAt: new Date().toISOString()
     };
 
@@ -128,6 +144,100 @@ app.delete('/rooms/:id', (req, res) => {
   } catch (error) {
     console.error('Erreur lors de la suppression de la salle :', error);
     res.status(500).json({ message: 'Erreur lors de la suppression de la salle' });
+  }
+});
+
+// Récupérer toutes les réservations
+app.get('/reservations', (req, res) => {
+  try {
+    const reservations = readReservations();
+    console.log('Récupération des réservations :', reservations.length, 'réservations trouvées');
+    res.json({ success: true, reservations });
+  } catch (error) {
+    console.error('Erreur lors de la récupération des réservations :', error);
+    res.status(500).json({ message: 'Erreur lors de la récupération des réservations' });
+  }
+});
+
+// Créer une nouvelle réservation
+app.post('/reservations', (req, res) => {
+  try {
+    const { roomId, roomName, date, time, userName, userEmail } = req.body;
+    
+    if (!roomId || !roomName || !date || !time || !userName || !userEmail) {
+      return res.status(400).json({ message: 'Tous les champs sont requis' });
+    }
+
+    const reservations = readReservations();
+    
+    // Vérifier si la salle est déjà réservée pour cette date et heure
+    const existingReservation = reservations.find(
+      reservation => 
+        reservation.roomId === roomId && 
+        reservation.date === date && 
+        reservation.time === time
+    );
+
+    if (existingReservation) {
+      return res.status(409).json({ message: 'Cette salle est déjà réservée pour cette date et heure' });
+    }
+
+    const newReservation = {
+      id: Date.now().toString(),
+      roomId,
+      roomName,
+      date,
+      time,
+      userName,
+      userEmail,
+      createdAt: new Date().toISOString()
+    };
+
+    reservations.push(newReservation);
+    writeReservations(reservations);
+    
+    console.log('Nouvelle réservation créée :', newReservation);
+    res.json({ success: true, reservation: newReservation });
+  } catch (error) {
+    console.error('Erreur lors de la création de la réservation :', error);
+    res.status(500).json({ message: 'Erreur lors de la création de la réservation' });
+  }
+});
+
+// Supprimer une réservation
+app.delete('/reservations/:id', (req, res) => {
+  try {
+    const { id } = req.params;
+    const reservations = readReservations();
+    const reservationIndex = reservations.findIndex(reservation => reservation.id === id);
+    
+    if (reservationIndex === -1) {
+      return res.status(404).json({ message: 'Réservation non trouvée' });
+    }
+
+    const deletedReservation = reservations.splice(reservationIndex, 1)[0];
+    writeReservations(reservations);
+    
+    console.log('Réservation supprimée :', deletedReservation);
+    res.json({ success: true, message: 'Réservation supprimée avec succès' });
+  } catch (error) {
+    console.error('Erreur lors de la suppression de la réservation :', error);
+    res.status(500).json({ message: 'Erreur lors de la suppression de la réservation' });
+  }
+});
+
+// Récupérer les réservations d'une salle spécifique
+app.get('/reservations/room/:roomId', (req, res) => {
+  try {
+    const { roomId } = req.params;
+    const reservations = readReservations();
+    const roomReservations = reservations.filter(reservation => reservation.roomId === roomId);
+    
+    console.log('Réservations pour la salle', roomId, ':', roomReservations.length, 'réservations trouvées');
+    res.json({ success: true, reservations: roomReservations });
+  } catch (error) {
+    console.error('Erreur lors de la récupération des réservations de la salle :', error);
+    res.status(500).json({ message: 'Erreur lors de la récupération des réservations de la salle' });
   }
 });
 

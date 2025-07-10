@@ -52,5 +52,76 @@
       "Canapé"
     ],
     "createdAt": "2025-07-09T21:36:13.941Z"
+  },
+  {
+    "id": "1752129250460",
+    "name": "Franck",
+    "capacity": "25",
+    "equipment": [
+      "Vidéo projecteur",
+      "Tableau"
+    ],
+    "customEquipment": [],
+    "createdAt": "2025-07-10T06:34:10.460Z"
+  },
+  {
+    "id": "1752129381827",
+    "name": "Sylvie",
+    "capacity": "25",
+    "equipment": [
+      "Vidéo projecteur",
+      "Climatisé",
+      "Tableau",
+      "Câblé"
+    ],
+    "customEquipment": [],
+    "createdAt": "2025-07-10T06:36:21.827Z"
+  },
+  {
+    "id": "1752130058578",
+    "name": "Martine",
+    "capacity": "75",
+    "equipment": [
+      "Climatisé",
+      "Tableau",
+      "Câblé",
+      "Vidéo projecteur"
+    ],
+    "customEquipment": [
+      "Canapé",
+      "Terrasse",
+      "Cafetières",
+      "WC"
+    ],
+    "createdAt": "2025-07-10T06:47:38.578Z"
+  },
+  {
+    "id": "1752130244571",
+    "name": "Evelyne",
+    "capacity": "25",
+    "equipment": [
+      "Vidéo projecteur",
+      "Climatisé",
+      "Tableau",
+      "Câblé"
+    ],
+    "customEquipment": [],
+    "floor": "2ème",
+    "createdAt": "2025-07-10T06:50:44.571Z"
+  },
+  {
+    "id": "1752130476909",
+    "name": "Manu",
+    "capacity": "41",
+    "equipment": [
+      "Vidéo projecteur",
+      "Tableau",
+      "Câblé",
+      "Climatisé"
+    ],
+    "customEquipment": [],
+    "description": "Attention pas chaises !",
+    "floor": "3ème",
+    "createdAt": "2025-07-10T06:54:36.909Z"
   }
 ]

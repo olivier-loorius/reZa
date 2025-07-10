@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, TextInput, KeyboardAvoidingView, Platform, ScrollView, Modal } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { COLORS, FONTS, SIZES } from '../theme';
+import { Picker } from '@react-native-picker/picker';
 
 interface CreateRoomFormProps {
   onBack: () => void;
@@ -23,6 +24,7 @@ const CreateRoomForm: React.FC<CreateRoomFormProps> = ({ onBack }) => {
   const [messageType, setMessageType] = useState<'success' | 'error' | ''>('');
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [selectedFloor, setSelectedFloor] = useState('');
 
   useEffect(() => {
     checkUserLogin();
@@ -77,7 +79,7 @@ const CreateRoomForm: React.FC<CreateRoomFormProps> = ({ onBack }) => {
   };
 
   const handleCreateRoom = async () => {
-    if (!roomName.trim() || !capacity.trim()) {
+    if (!roomName.trim() || !capacity.trim() || !selectedFloor) {
       setMessage('Veuillez remplir tous les champs obligatoires.');
       setMessageType('error');
       return;
@@ -102,6 +104,7 @@ const CreateRoomForm: React.FC<CreateRoomFormProps> = ({ onBack }) => {
         body: JSON.stringify({
           name: roomName.trim(),
           capacity: capacity.trim(),
+          floor: selectedFloor,
           equipment: selectedEquipment,
           customEquipment: customEquipmentList,
           description: description.trim() || undefined,
@@ -200,6 +203,20 @@ const CreateRoomForm: React.FC<CreateRoomFormProps> = ({ onBack }) => {
           placeholderTextColor="#888"
           keyboardType="numeric"
         />
+        <View style={[styles.input, { paddingHorizontal: 0, paddingVertical: 0, height: 48, justifyContent: 'center' }]}> 
+          <Picker
+            selectedValue={selectedFloor}
+            onValueChange={setSelectedFloor}
+            style={{ color: COLORS.text, fontFamily: FONTS.regular, width: '100%' }}
+            dropdownIconColor={COLORS.text}
+          >
+            <Picker.Item label="Sélectionner l'étage *" value="" color="#888" />
+            <Picker.Item label="RDC" value="RDC" />
+            <Picker.Item label="1er étage" value="1er" />
+            <Picker.Item label="2ème étage" value="2ème" />
+            <Picker.Item label="3ème étage" value="3ème" />
+          </Picker>
+        </View>
 
         <Text style={styles.sectionTitle}>Équipements</Text>
         

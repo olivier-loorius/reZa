@@ -9,6 +9,7 @@ interface RoomsScreenProps {
   onLogout: () => void;
   onCreateRoom: () => void;
   onGoToLogin: () => void;
+  onRoomDetail: (room: Room) => void;
 }
 
 interface User {
@@ -23,9 +24,10 @@ interface Room {
   equipment: string[];
   customEquipment: string[];
   description?: string;
+  floor?: string;
 }
 
-const RoomsScreen: React.FC<RoomsScreenProps> = ({ onBack, onLogout, onCreateRoom, onGoToLogin }) => {
+const RoomsScreen: React.FC<RoomsScreenProps> = ({ onBack, onLogout, onCreateRoom, onGoToLogin, onRoomDetail }) => {
   const [user, setUser] = useState<User | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -88,8 +90,7 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ onBack, onLogout, onCreateRoo
   };
 
   const handleRoomPress = (room: Room) => {
-    // TODO: Ouvrir les détails de la salle
-    console.log('Salle sélectionnée:', room.name);
+    onRoomDetail(room);
   };
 
   return (

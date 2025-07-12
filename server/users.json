@@ -5,19 +5,9 @@
     "password": "$2b$10$QRieEL9RyCEgrVYLxRFZluG7n6JSWUk7f6q3k1z5.Jlr56Iw267YC"
   },
   {
-    "name": "Olivier",
-    "email": "olivier@react.com",
-    "password": "$2b$10$eRGkQL0gRLekCHfonyNC8uPCaLj6FEeqH8B8AOZ54H/u7xGpOoCYq"
-  },
-  {
     "name": "Gabin",
     "email": "gabin@react.com",
     "password": "$2b$10$JScILnLQBRmavfkRAs3z9OrsA0ZRg4vmSoaWE9zQbNrcJwxU0gbXu"
-  },
-  {
-    "name": "Titi",
-    "email": "titi@react.com",
-    "password": "$2b$10$lESj6TJrPO/ixLlnyPTRC.s3tGGuR2vj3nnBYokaWBTu57PXevTD6"
   },
   {
     "name": "Toto",
@@ -53,5 +43,20 @@
     "name": "Maurice",
     "email": "maurice@react.com",
     "password": "$2b$10$DLsodpz0X1NLBd5OsyYoJeS1R5YpyKnv2tl9xmPIQvWBnOPaX1KwC"
+  },
+  {
+    "name": "Mimi",
+    "email": "mimi@react.com",
+    "password": "$2b$10$0PA1GFJ.wuL8oQf74NgRJeIeQX3awaLRb2SOqG7Ux0kQ9VTwMZcLm"
+  },
+  {
+    "name": "Olivier",
+    "email": "olivier@react.com",
+    "password": "$2b$10$VXw3csZJD.SSNFsqR8C2muKA5iBRIuAFMDYAmx2FhfYZeXWB/cVJ2"
+  },
+  {
+    "name": "Titi",
+    "email": "titi@react.com",
+    "password": "$2b$10$iVklWjFN953Ka2v2V3nHe.AslUbWRik4dt4GvGL3awIOFzsTbeRWi"
   }
 ]

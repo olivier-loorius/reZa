@@ -6,6 +6,8 @@ import SplashScreenComponent from './components/SplashScreen';
 import HomeScreen from './components/HomeScreen';
 import LoginForm from './components/LoginForm';
 import RoomsScreen from './components/RoomsScreen';
+import MyRoomsScreen from './components/MyRoomsScreen';
+import MyReservationsScreen from './components/MyReservationsScreen';
 import CreateRoomForm from './components/CreateRoomForm';
 import RoomDetailScreen from './components/RoomDetailScreen';
 
@@ -15,6 +17,8 @@ const App: React.FC = () => {
   const [fontsLoaded, setFontsLoaded] = useState<boolean>(false);
   const [showLogin, setShowLogin] = useState<boolean>(false);
   const [showRooms, setShowRooms] = useState<boolean>(false);
+  const [showMyRooms, setShowMyRooms] = useState<boolean>(false);
+  const [showMyReservations, setShowMyReservations] = useState<boolean>(false);
   const [showCreateRoom, setShowCreateRoom] = useState<boolean>(false);
   const [showRoomDetail, setShowRoomDetail] = useState<boolean>(false);
   const [selectedRoom, setSelectedRoom] = useState<any>(null);
@@ -43,6 +47,8 @@ const App: React.FC = () => {
 
   const handleLogout = () => {
     setShowRooms(false);
+    setShowMyRooms(false);
+    setShowMyReservations(false);
     setShowLogin(false);
     setShowCreateRoom(false);
     setShowRoomDetail(false);
@@ -79,6 +85,19 @@ const App: React.FC = () => {
     />;
   }
 
+  if (showMyReservations) {
+    return <MyReservationsScreen 
+      onBack={() => setShowMyReservations(false)} 
+    />;
+  }
+
+  if (showMyRooms) {
+    return <MyRoomsScreen 
+      onBack={() => setShowMyRooms(false)} 
+      onRoomDetail={handleRoomDetail}
+    />;
+  }
+
   if (showRooms) {
     return <RoomsScreen 
       onBack={() => setShowRooms(false)} 
@@ -86,6 +105,8 @@ const App: React.FC = () => {
       onCreateRoom={() => setShowCreateRoom(true)}
       onGoToLogin={() => setShowLogin(true)}
       onRoomDetail={handleRoomDetail}
+      onShowMyRooms={() => setShowMyRooms(true)}
+      onShowMyReservations={() => setShowMyReservations(true)}
     />;
   }
 

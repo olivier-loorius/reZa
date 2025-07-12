@@ -95,8 +95,8 @@ app.get('/rooms', (req, res) => {
 // Créer une nouvelle salle
 app.post('/rooms', (req, res) => {
   try {
-    console.log('Body reçu pour création de salle :', req.body);
-    const { name, capacity, equipment, customEquipment, description, floor } = req.body;
+    console.log('Body reçu pour création de salle (DEBUG):', JSON.stringify(req.body));
+    const { name, capacity, equipment, customEquipment, description, floor, creatorName, creatorEmail } = req.body;
     
     if (!name || !capacity) {
       return res.status(400).json({ message: 'Nom et capacité requis' });
@@ -111,6 +111,8 @@ app.post('/rooms', (req, res) => {
       customEquipment: customEquipment || [],
       description: description ? description.trim() : undefined,
       floor: floor || undefined,
+      creatorName: creatorName || undefined,
+      creatorEmail: creatorEmail || undefined,
       createdAt: new Date().toISOString()
     };
 
@@ -129,11 +131,17 @@ app.post('/rooms', (req, res) => {
 app.delete('/rooms/:id', (req, res) => {
   try {
     const { id } = req.params;
+    const { creatorEmail } = req.body;
     const rooms = readRooms();
     const roomIndex = rooms.findIndex(room => room.id === id);
     
     if (roomIndex === -1) {
       return res.status(404).json({ message: 'Salle non trouvée' });
+    }
+
+    const room = rooms[roomIndex];
+    if (!room.creatorEmail || !creatorEmail || room.creatorEmail !== creatorEmail) {
+      return res.status(403).json({ message: 'Suppression non autorisée : seul le créateur peut supprimer cette salle.' });
     }
 
     const deletedRoom = rooms.splice(roomIndex, 1)[0];

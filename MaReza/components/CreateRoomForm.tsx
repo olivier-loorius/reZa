@@ -22,7 +22,7 @@ const CreateRoomForm: React.FC<CreateRoomFormProps> = ({ onBack }) => {
   const [customEquipmentList, setCustomEquipmentList] = useState<string[]>([]);
   const [message, setMessage] = useState('');
   const [messageType, setMessageType] = useState<'success' | 'error' | ''>('');
-  const [showConfirmation, setShowConfirmation] = useState(false);
+  const [showCustomConfirm, setShowCustomConfirm] = useState(false);
   const [user, setUser] = useState<User | null>(null);
   const [selectedFloor, setSelectedFloor] = useState('');
 
@@ -43,7 +43,6 @@ const CreateRoomForm: React.FC<CreateRoomFormProps> = ({ onBack }) => {
         }, 2000);
       }
     } catch (error) {
-      console.log('Erreur lors de la vérification de connexion');
       setMessage('Erreur de vérification de connexion');
       setMessageType('error');
       setTimeout(() => {
@@ -91,11 +90,11 @@ const CreateRoomForm: React.FC<CreateRoomFormProps> = ({ onBack }) => {
       return;
     }
 
-    setShowConfirmation(true);
+    setShowCustomConfirm(true);
   };
 
   const confirmCreateRoom = async () => {
-    setShowConfirmation(false);
+    setShowCustomConfirm(false);
     
     try {
       const response = await fetch('http://192.168.1.12:3001/rooms', {
@@ -108,6 +107,8 @@ const CreateRoomForm: React.FC<CreateRoomFormProps> = ({ onBack }) => {
           equipment: selectedEquipment,
           customEquipment: customEquipmentList,
           description: description.trim() || undefined,
+          creatorName: user?.name,
+          creatorEmail: user?.email,
         }),
       });
 
@@ -117,7 +118,6 @@ const CreateRoomForm: React.FC<CreateRoomFormProps> = ({ onBack }) => {
         setMessage('Salle créée avec succès !');
         setMessageType('success');
         
-        // Reset form after success
         setTimeout(() => {
           setRoomName('');
           setCapacity('');
@@ -140,7 +140,7 @@ const CreateRoomForm: React.FC<CreateRoomFormProps> = ({ onBack }) => {
   };
 
   const cancelCreateRoom = () => {
-    setShowConfirmation(false);
+    setShowCustomConfirm(false);
   };
 
   if (!user) {
@@ -294,23 +294,21 @@ const CreateRoomForm: React.FC<CreateRoomFormProps> = ({ onBack }) => {
 
       {/* Modal de confirmation */}
       <Modal
-        visible={showConfirmation}
+        visible={showCustomConfirm}
         transparent={true}
         animationType="fade"
         onRequestClose={cancelCreateRoom}
       >
         <View style={styles.modalOverlay}>
-          <View style={styles.confirmationModal}>
-            <Text style={styles.confirmationTitle}>Confirmer la création</Text>
-            <Text style={styles.confirmationText}>
-              Êtes-vous sûr de vouloir créer la salle "{roomName}" ?
-            </Text>
-            <View style={styles.confirmationButtons}>
-              <TouchableOpacity style={styles.cancelButton} onPress={cancelCreateRoom}>
-                <Text style={styles.cancelButtonText}>Annuler</Text>
+          <View style={styles.confirmationModalBox}>
+            <Text style={styles.confirmationModalTitle}>Confirmer la création</Text>
+            <Text style={styles.confirmationModalText}>Êtes-vous sûr de vouloir créer la salle "{roomName}" ?</Text>
+            <View style={styles.confirmationModalActions}>
+              <TouchableOpacity style={styles.confirmationModalCancel} onPress={cancelCreateRoom}>
+                <Text style={styles.confirmationModalCancelText}>Annuler</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.confirmButton} onPress={confirmCreateRoom}>
-                <Text style={styles.confirmButtonText}>Confirmer</Text>
+              <TouchableOpacity style={styles.confirmationModalConfirm} onPress={confirmCreateRoom}>
+                <Text style={styles.confirmationModalConfirmText}>Confirmer</Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -536,70 +534,64 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
   },
-  confirmationModal: {
+  confirmationModalBox: {
     backgroundColor: COLORS.background,
-    borderRadius: 16,
-    padding: 24,
-    width: '100%',
-    maxWidth: 400,
+    borderRadius: 22,
+    padding: 28,
+    alignItems: 'center',
+    width: 320,
+    maxWidth: '90%',
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.18,
+    shadowRadius: 12,
     elevation: 8,
   },
-  confirmationTitle: {
+  confirmationModalTitle: {
     fontSize: 20,
     fontWeight: 'bold',
-    color: COLORS.text,
-    marginBottom: 16,
-    textAlign: 'center',
+    color: COLORS.primary,
     fontFamily: FONTS.bold,
+    marginBottom: 12,
   },
-  confirmationText: {
+  confirmationModalText: {
     fontSize: 16,
-    color: COLORS.subtitle,
-    textAlign: 'center',
-    marginBottom: 24,
-    lineHeight: 22,
+    color: COLORS.text,
     fontFamily: FONTS.regular,
+    marginBottom: 24,
+    textAlign: 'center',
   },
-  confirmationButtons: {
+  confirmationModalActions: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    width: '100%',
   },
-  cancelButton: {
+  confirmationModalCancel: {
     flex: 1,
+    backgroundColor: COLORS.inputBg,
+    borderRadius: 12,
     paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
-    borderWidth: 2,
-    borderColor: COLORS.inputBorder,
     marginRight: 8,
     alignItems: 'center',
+    borderWidth: 1.5,
+    borderColor: COLORS.inputBorder,
   },
-  cancelButtonText: {
-    color: COLORS.subtitle,
+  confirmationModalCancelText: {
+    color: COLORS.text,
     fontSize: 16,
-    fontWeight: 'bold',
     fontFamily: FONTS.bold,
   },
-  confirmButton: {
+  confirmationModalConfirm: {
     flex: 1,
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 8,
     backgroundColor: COLORS.accent,
+    borderRadius: 12,
+    paddingVertical: 12,
     marginLeft: 8,
     alignItems: 'center',
   },
-  confirmButtonText: {
+  confirmationModalConfirmText: {
     color: COLORS.background,
     fontSize: 16,
-    fontWeight: 'bold',
     fontFamily: FONTS.bold,
   },
 }); 

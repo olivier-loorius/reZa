@@ -19,7 +19,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ onBack, onLoginSuccess }) => {
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   const handleLogin = async () => {
-    if (isRedirecting) return; // Éviter les appels multiples
+    if (isRedirecting) return;
     
     try {
       const response = await fetch('http://192.168.1.12:3001/login', {
@@ -29,16 +29,12 @@ const LoginForm: React.FC<LoginFormProps> = ({ onBack, onLoginSuccess }) => {
       });
       const data = await response.json();
       if (data.success) {
-        console.log('Connexion réussie, redirection vers les salles...');
         setMessage('Connexion réussie !');
         setMessageType('success');
         await SecureStore.setItemAsync('user', JSON.stringify(data.user));
         
-        // Rediriger immédiatement vers la page des salles
         setIsRedirecting(true);
-        console.log('Appel de onLoginSuccess...');
         onLoginSuccess();
-        console.log('onLoginSuccess appelé');
       } else {
         if (data.message === 'Mot de passe incorrect') {
           setMessage('Mot de passe incorrect ou utilisateur non enregistré.');

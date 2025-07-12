@@ -50,18 +50,84 @@ Scanne le QR code avec Expo Go sur ton mobile (assure-toi que ton téléphone et
   - Mac/Linux : `ifconfig` ou `ip a`
 
 ## Fonctionnalités principales
-- Splash screen animé
-- Page d'accueil avec logo, texte, bouton GO
-- Formulaire de connexion (nom, email, mot de passe)
-- Stockage sécurisé de l'utilisateur connecté
-- Gestion des utilisateurs côté back (Node.js, users.json, mot de passe hashé)
-- Affichage de messages stylés (succès/erreur)
+
+###  Interface utilisateur
+- Splash screen animé avec logo et transition
+- Page d'accueil: logo, texte d'accueil et boutons de navigation
+- Navigation avec boutons de retour et menus
+
+###  Authentification
+- Formulaire de connexion: nom, email, mot de passe
+- Stockage sécurisé de l'utilisateur connecté avec Expo SecureStore
+- Gestion des utilisateurs côté back: Node.js, users.json, mot de passe hashé
+- Indicateur de connexion avec avatar utilisateur et statut visuel
+
+###  Gestion des salles
+- Création de salles avec formulaire: nom, capacité, équipements, +, description, étage
+- Affichage des salles détaillées
+- Vue détaillée de chaque salle avec image, équipements et réservations existantes
+- Gestion des créateurs : seuls les créateurs peuvent supprimer leurs salles
+- Interface "Mes salles" pour voir et gérer ses propres salles
+
+###  Système de réservation
+- Réservation flexible : 1-4 heures ou journée complète
+- Sélection de date avec calendrier avancé et dates rapides
+- Sélection d'heure avec créneaux de 9h à 20h
+- Vérification de disponibilité
+- Modal de confirmation avec détails de la réservation
+
+###  Gestion des utilisateurs
+- Menu utilisateur  et statut de connexion
+- Bouton "Mes ReZa" avec logo pour accéder aux réservations personnelles
+- Gestion des réservations: voir, supprimer ses propres réservations
+- Déconnexion sécurisée avec nettoyage des données
+
+###  Organisation des données
+- Stockage JSON côté server: users.json, rooms.json, reservations.json
+- Validation des données côté serveur et client
+- Gestion des erreurs avec messages utilisateur appropriés
+
+
+## Structure du projet
+
+```
+Reza/
+├── MaReza/                 # Application React Native
+│   ├── components/         # Composants réutilisables
+│   ├── assets/            # Images, fonts, etc.
+│   ├── theme.ts           # Configuration des couleurs et styles
+│   └── App.tsx           # Point d'entrée de l'app
+└── server/                # API Node.js
+    ├── index.js           # Serveur Express
+    ├── users.json         # Base de données utilisateurs
+    ├── rooms.json         # Base de données salles
+    └── reservations.json  # Base de données réservations
+```
+
+## API Endpoints
+
+### Authentification
+- `POST /login` - Connexion utilisateur
+
+### Salles
+- `GET /rooms` - Récupérer toutes les salles
+- `POST /rooms` - Créer une nouvelle salle
+- `DELETE /rooms/:id` - Supprimer une salle
+
+### Réservations
+- `GET /reservations` - Récupérer toutes les réservations
+- `POST /reservations` - Créer une nouvelle réservation
+- `DELETE /reservations/:id` - Supprimer une réservation
+- `GET /reservations/room/:roomId` - Réservations d'une salle
 
 ## Astuces
 - Pour réinitialiser les utilisateurs, vide le fichier `server/users.json` (`[]`).
 - Pour changer le port du serveur, modifie `PORT` dans `server/index.js`.
+- Les mots de passe sont hashés avec bcrypt pour la sécurité.
 
 ## Démo
 - Fonctionne sur Expo Go (Android/iOS)
 - Testé sur Node.js 18+
+- Interface intuitive et moderne
+- Gestion complète du cycle de vie des réservations
 

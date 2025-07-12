@@ -1,118 +1,61 @@
 [
   {
-    "id": "1752096537136",
-    "name": "Maurice",
-    "capacity": "12",
+    "id": "1752133277629",
+    "name": "Michel",
+    "capacity": "24",
     "equipment": [
       "Vidéo projecteur",
-      "Climatisé",
-      "Tableau",
-      "Câblé"
-    ],
-    "customEquipment": [
-      "Chaises",
-      "Une cafetière"
-    ],
-    "createdAt": "2025-07-09T21:28:57.137Z"
-  },
-  {
-    "id": "1752096581545",
-    "name": "Aurel",
-    "capacity": "4",
-    "equipment": [
-      "Tableau"
-    ],
-    "customEquipment": [],
-    "createdAt": "2025-07-09T21:29:41.545Z"
-  },
-  {
-    "id": "1752096918546",
-    "name": "Vivi",
-    "capacity": "28",
-    "equipment": [
-      "Vidéo projecteur",
-      "Tableau"
-    ],
-    "customEquipment": [],
-    "createdAt": "2025-07-09T21:35:18.546Z"
-  },
-  {
-    "id": "1752096973941",
-    "name": "Popo",
-    "capacity": "36",
-    "equipment": [
-      "Vidéo projecteur",
-      "Climatisé",
-      "Tableau",
-      "Câblé"
-    ],
-    "customEquipment": [
-      "Terrasse",
-      "WC",
-      "Canapé"
-    ],
-    "createdAt": "2025-07-09T21:36:13.941Z"
-  },
-  {
-    "id": "1752129250460",
-    "name": "Franck",
-    "capacity": "25",
-    "equipment": [
-      "Vidéo projecteur",
-      "Tableau"
-    ],
-    "customEquipment": [],
-    "createdAt": "2025-07-10T06:34:10.460Z"
-  },
-  {
-    "id": "1752129381827",
-    "name": "Sylvie",
-    "capacity": "25",
-    "equipment": [
-      "Vidéo projecteur",
-      "Climatisé",
-      "Tableau",
-      "Câblé"
-    ],
-    "customEquipment": [],
-    "createdAt": "2025-07-10T06:36:21.827Z"
-  },
-  {
-    "id": "1752130058578",
-    "name": "Martine",
-    "capacity": "75",
-    "equipment": [
-      "Climatisé",
       "Tableau",
       "Câblé",
-      "Vidéo projecteur"
+      "Climatisé"
     ],
     "customEquipment": [
-      "Canapé",
-      "Terrasse",
-      "Cafetières",
-      "WC"
+      "Canapé"
     ],
-    "createdAt": "2025-07-10T06:47:38.578Z"
+    "description": "Terrasse \nWC indépendant.",
+    "floor": "RDC",
+    "createdAt": "2025-07-10T07:41:17.629Z"
   },
   {
-    "id": "1752130244571",
-    "name": "Evelyne",
-    "capacity": "25",
+    "id": "1752298804621",
+    "name": "Alice",
+    "capacity": "24",
     "equipment": [
       "Vidéo projecteur",
-      "Climatisé",
       "Tableau",
-      "Câblé"
+      "Climatisé"
     ],
     "customEquipment": [],
-    "floor": "2ème",
-    "createdAt": "2025-07-10T06:50:44.571Z"
+    "floor": "RDC",
+    "creatorName": "Mimi",
+    "creatorEmail": "mimi@react.com",
+    "createdAt": "2025-07-12T05:40:04.621Z"
   },
   {
-    "id": "1752130476909",
-    "name": "Manu",
-    "capacity": "41",
+    "id": "1752298912813",
+    "name": "Sasha",
+    "capacity": "50",
+    "equipment": [
+      "Vidéo projecteur",
+      "Tableau",
+      "Câblé",
+      "Climatisé"
+    ],
+    "customEquipment": [
+      "Cafetière",
+      "Canapé",
+      "Cloison amovible"
+    ],
+    "description": "Accès PMR.\nGrande terrasse.\nWC indépendant",
+    "floor": "RDC",
+    "creatorName": "Mimi",
+    "creatorEmail": "mimi@react.com",
+    "createdAt": "2025-07-12T05:41:52.813Z"
+  },
+  {
+    "id": "1752299832121",
+    "name": "Eliott",
+    "capacity": "36",
     "equipment": [
       "Vidéo projecteur",
       "Tableau",
@@ -120,8 +63,74 @@
       "Climatisé"
     ],
     "customEquipment": [],
-    "description": "Attention pas chaises !",
+    "description": "Toit terrasse équipé de salon, et ombragé",
     "floor": "3ème",
-    "createdAt": "2025-07-10T06:54:36.909Z"
+    "creatorName": "Mimi",
+    "creatorEmail": "mimi@react.com",
+    "createdAt": "2025-07-12T05:57:12.121Z"
+  },
+  {
+    "id": "1752300586575",
+    "name": "Gabin",
+    "capacity": "24",
+    "equipment": [
+      "Vidéo projecteur",
+      "Tableau",
+      "Climatisé"
+    ],
+    "customEquipment": [],
+    "description": "Attention tables non amovible",
+    "floor": "1er",
+    "creatorName": "Olivier",
+    "creatorEmail": "olivier@react.com",
+    "createdAt": "2025-07-12T06:09:46.575Z"
+  },
+  {
+    "id": "1752300659870",
+    "name": "Victor",
+    "capacity": "20",
+    "equipment": [
+      "Tableau",
+      "Câblé",
+      "Climatisé"
+    ],
+    "customEquipment": [],
+    "description": "Attention tables haute",
+    "floor": "3ème",
+    "creatorName": "Olivier",
+    "creatorEmail": "olivier@react.com",
+    "createdAt": "2025-07-12T06:10:59.870Z"
+  },
+  {
+    "id": "1752300747977",
+    "name": "Lilou",
+    "capacity": "30",
+    "equipment": [
+      "Vidéo projecteur",
+      "Tableau",
+      "Câblé",
+      "Climatisé"
+    ],
+    "customEquipment": [],
+    "floor": "2ème",
+    "creatorName": "Titi",
+    "creatorEmail": "titi@react.com",
+    "createdAt": "2025-07-12T06:12:27.977Z"
+  },
+  {
+    "id": "1752300768557",
+    "name": "Clara",
+    "capacity": "30",
+    "equipment": [
+      "Vidéo projecteur",
+      "Tableau",
+      "Climatisé",
+      "Câblé"
+    ],
+    "customEquipment": [],
+    "floor": "1er",
+    "creatorName": "Titi",
+    "creatorEmail": "titi@react.com",
+    "createdAt": "2025-07-12T06:12:48.557Z"
   }
 ]

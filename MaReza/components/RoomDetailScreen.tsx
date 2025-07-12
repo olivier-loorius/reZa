@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { View, StyleSheet, Text, TouchableOpacity, ScrollView, Modal, Alert, ImageBackground } from 'react-native';
 import * as SecureStore from 'expo-secure-store';
 import { COLORS, FONTS, SIZES } from '../theme';
+import { Ionicons } from '@expo/vector-icons';
+import DeleteConfirmationModal from './DeleteConfirmationModal';
+import SuccessModal from './SuccessModal';
+import ReservationModal from './ReservationModal';
 
 interface Room {
   id: string;
@@ -11,6 +15,8 @@ interface Room {
   customEquipment: string[];
   description?: string;
   floor?: string;
+  creatorName?: string;
+  creatorEmail?: string;
 }
 
 interface RoomDetailScreenProps {
@@ -20,18 +26,14 @@ interface RoomDetailScreenProps {
 
 const RoomDetailScreen: React.FC<RoomDetailScreenProps> = ({ room, onBack }) => {
   const [showReservationModal, setShowReservationModal] = useState(false);
-  const [selectedDate, setSelectedDate] = useState<string>('');
-  const [selectedTime, setSelectedTime] = useState<string>('');
   const [user, setUser] = useState<any>(null);
   const [reservations, setReservations] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [showDeleteSuccess, setShowDeleteSuccess] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const allEquipment = [...room.equipment, ...room.customEquipment];
-
-  const timeSlots = [
-    '09:00', '10:00', '11:00', '12:00', '13:00', '14:00', 
-    '15:00', '16:00', '17:00', '18:00', '19:00', '20:00'
-  ];
 
   useEffect(() => {
     const getUser = async () => {
@@ -41,12 +43,21 @@ const RoomDetailScreen: React.FC<RoomDetailScreenProps> = ({ room, onBack }) => 
           setUser(JSON.parse(userData));
         }
       } catch (error) {
-        console.log('Erreur lors de la récupération des données utilisateur');
       }
     };
     getUser();
     loadReservations();
   }, []);
+
+  useEffect(() => {
+    if (showDeleteSuccess) {
+      const timer = setTimeout(() => {
+        setShowDeleteSuccess(false);
+        onBack();
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [showDeleteSuccess]);
 
   const loadReservations = async () => {
     try {
@@ -56,51 +67,98 @@ const RoomDetailScreen: React.FC<RoomDetailScreenProps> = ({ room, onBack }) => 
         setReservations(data.reservations);
       }
     } catch (error) {
-      console.log('Erreur lors du chargement des réservations:', error);
     }
   };
 
-  const handleReservation = async () => {
+  const handleReservation = async (date: string, time: string, duration: number): Promise<boolean> => {
     if (!user) {
       Alert.alert('Connexion requise', 'Vous devez être connecté pour réserver une salle.');
-      return;
+      return false;
     }
 
-    if (selectedDate && selectedTime) {
-      setIsLoading(true);
-      try {
-        const response = await fetch('http://192.168.1.12:3001/reservations', {
+    setIsLoading(true);
+    try {
+      const reservations = [];
+      
+      if (duration === 8) {
+        for (let hour = 9; hour <= 20; hour++) {
+          reservations.push({
+            roomId: room.id,
+            roomName: room.name,
+            date: date,
+            time: `${hour.toString().padStart(2, '0')}:00`,
+            userName: user.name,
+            userEmail: user.email,
+          });
+        }
+      } else {
+        for (let i = 0; i < duration; i++) {
+          const hour = parseInt(time.split(':')[0]) + i;
+          if (hour < 24) {
+            reservations.push({
+              roomId: room.id,
+              roomName: room.name,
+              date: date,
+              time: `${hour.toString().padStart(2, '0')}:00`,
+              userName: user.name,
+              userEmail: user.email,
+            });
+          }
+        }
+      }
+
+      const promises = reservations.map(reservation =>
+        fetch('http://192.168.1.12:3001/reservations', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            roomId: room.id,
-            roomName: room.name,
-            date: selectedDate,
-            time: selectedTime,
-            userName: user.name,
-            userEmail: user.email,
-          }),
-        });
+          body: JSON.stringify(reservation),
+        })
+      );
 
-        const data = await response.json();
-        
-        if (data.success) {
-          Alert.alert('Succès', 'Réservation créée avec succès !');
-          setShowReservationModal(false);
-          setSelectedDate('');
-          setSelectedTime('');
-          loadReservations();
-        } else {
-          Alert.alert('Erreur', data.message || 'Erreur lors de la création de la réservation');
-        }
-      } catch (error) {
-        console.log('Erreur lors de la création de la réservation:', error);
-        Alert.alert('Erreur', 'Erreur de connexion au serveur');
-      } finally {
-        setIsLoading(false);
+      const responses = await Promise.all(promises);
+      const results = await Promise.all(responses.map(r => r.json()));
+      
+      const hasError = results.some(result => !result.success);
+      
+      if (!hasError) {
+        loadReservations();
+        return true;
+      } else {
+        Alert.alert('Erreur', 'Erreur lors de la création de la réservation');
+        return false;
       }
+    } catch (error) {
+      Alert.alert('Erreur', 'Erreur de connexion au serveur');
+      return false;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeleteRoom = () => {
+    setShowDeleteModal(true);
+  };
+  const confirmDeleteRoom = async () => {
+    setIsDeleting(true);
+    try {
+      const response = await fetch(`http://192.168.1.12:3001/rooms/${room.id}`, {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ creatorEmail: user?.email }),
+      });
+      const data = await response.json();
+      if (data.success) {
+        setShowDeleteModal(false);
+        setShowDeleteSuccess(true);
+      } else {
+        Alert.alert('Erreur', data.message || 'Suppression impossible');
+      }
+    } catch (e) {
+      Alert.alert('Erreur', 'Erreur de connexion au serveur');
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -121,9 +179,21 @@ const RoomDetailScreen: React.FC<RoomDetailScreenProps> = ({ room, onBack }) => 
             <View style={styles.cardOverlay}>
               <View style={styles.cardOverlayBg} />
               <View style={styles.cardOverlayContent}>
-                <Text style={styles.cardTitle}>{room.name}</Text>
-                <View style={styles.capacityBadgeLarge}>
-                  <Text style={styles.capacityTextLarge}>{room.capacity} places</Text>
+                <View style={{ flexDirection: 'row', width: '100%', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <View style={{ flex: 1 }}>
+                    <Text style={styles.cardTitle}>{room.name}</Text>
+                    <View style={styles.capacityBadgeLarge}>
+                      <Text style={styles.capacityTextLarge}>{room.capacity} places</Text>
+                    </View>
+                    {room.creatorName && (
+                      <Text style={styles.creatorText}>Ajoutée par : {room.creatorName}</Text>
+                    )}
+                  </View>
+                  {user && room.creatorEmail && user.email === room.creatorEmail && (
+                    <TouchableOpacity onPress={handleDeleteRoom} style={styles.deleteIconBtn}>
+                      <Ionicons name="trash" size={28} color={COLORS.accent} />
+                    </TouchableOpacity>
+                  )}
                 </View>
               </View>
             </View>
@@ -157,6 +227,14 @@ const RoomDetailScreen: React.FC<RoomDetailScreenProps> = ({ room, onBack }) => 
           </View>
         )}
 
+        {/* Reservation Button */}
+        <TouchableOpacity 
+          style={styles.reservationButtonModern}
+          onPress={() => setShowReservationModal(true)}
+        >
+          <Text style={styles.reservationButtonTextModern}>Réserver cette salle</Text>
+        </TouchableOpacity>
+
         {/* Existing Reservations */}
         {reservations.length > 0 && (
           <View style={styles.reservationsSection}>
@@ -176,124 +254,39 @@ const RoomDetailScreen: React.FC<RoomDetailScreenProps> = ({ room, onBack }) => 
             ))}
           </View>
         )}
-
-        {/* Reservation Button */}
-        <TouchableOpacity 
-          style={styles.reservationButtonModern}
-          onPress={() => setShowReservationModal(true)}
-        >
-          <Text style={styles.reservationButtonTextModern}>Réserver cette salle</Text>
-        </TouchableOpacity>
       </ScrollView>
 
-      {/* Reservation Modal */}
-      <Modal
+      <ReservationModal
         visible={showReservationModal}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={() => setShowReservationModal(false)}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.reservationModal}>
-            <Text style={styles.modalTitle}>Réserver {room.name}</Text>
-            
-            {/* Date Selection */}
-            <Text style={styles.modalSubtitle}>Sélectionner une date</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.dateContainer}>
-              {Array.from({ length: 7 }, (_, i) => {
-                const date = new Date();
-                date.setDate(date.getDate() + i);
-                const dateStr = date.toISOString().split('T')[0];
-                const dayName = date.toLocaleDateString('fr-FR', { weekday: 'short' });
-                const dayNumber = date.getDate();
-                
-                return (
-                  <TouchableOpacity
-                    key={dateStr}
-                    style={[
-                      styles.dateButton,
-                      selectedDate === dateStr && styles.dateButtonSelected
-                    ]}
-                    onPress={() => setSelectedDate(dateStr)}
-                  >
-                    <Text style={[
-                      styles.dateButtonText,
-                      selectedDate === dateStr && styles.dateButtonTextSelected
-                    ]}>
-                      {dayName}
-                    </Text>
-                    <Text style={[
-                      styles.dateButtonNumber,
-                      selectedDate === dateStr && styles.dateButtonTextSelected
-                    ]}>
-                      {dayNumber}
-                    </Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </ScrollView>
+        roomName={room.name}
+        existingReservations={reservations}
+        onCancel={() => setShowReservationModal(false)}
+        onConfirm={handleReservation}
+        onSuccess={() => {
+          setShowReservationModal(false);
+          onBack();
+        }}
+        isLoading={isLoading}
+      />
 
-            {/* Time Selection */}
-            {selectedDate && (
-              <>
-                <Text style={styles.modalSubtitle}>Sélectionner un créneau</Text>
-                <View style={styles.timeContainer}>
-                  {timeSlots.map((time) => {
-                    const isReserved = reservations.some(
-                      reservation => 
-                        reservation.date === selectedDate && 
-                        reservation.time === time
-                    );
-                    
-                    return (
-                      <TouchableOpacity
-                        key={time}
-                        style={[
-                          styles.timeButton,
-                          selectedTime === time && styles.timeButtonSelected,
-                          isReserved && styles.timeButtonDisabled
-                        ]}
-                        onPress={() => !isReserved && setSelectedTime(time)}
-                        disabled={isReserved}
-                      >
-                        <Text style={[
-                          styles.timeButtonText,
-                          selectedTime === time && styles.timeButtonTextSelected,
-                          isReserved && styles.timeButtonTextDisabled
-                        ]}>
-                          {time}
-                        </Text>
-                      </TouchableOpacity>
-                    );
-                  })}
-                </View>
-              </>
-            )}
+      <DeleteConfirmationModal
+        visible={showDeleteModal}
+        title="Supprimer la salle"
+        message="Es-tu sûr de vouloir supprimer cette salle ?"
+        onCancel={() => setShowDeleteModal(false)}
+        onConfirm={confirmDeleteRoom}
+        isLoading={isDeleting}
+      />
 
-            {/* Action Buttons */}
-            <View style={styles.modalButtons}>
-              <TouchableOpacity 
-                style={styles.cancelButton}
-                onPress={() => setShowReservationModal(false)}
-              >
-                <Text style={styles.cancelButtonText}>Annuler</Text>
-              </TouchableOpacity>
-              <TouchableOpacity 
-                style={[
-                  styles.confirmButton,
-                  (!selectedDate || !selectedTime || isLoading) && styles.confirmButtonDisabled
-                ]}
-                onPress={handleReservation}
-                disabled={!selectedDate || !selectedTime || isLoading}
-              >
-                <Text style={styles.confirmButtonText}>
-                  {isLoading ? 'Création...' : 'Confirmer'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
+      <SuccessModal
+        visible={showDeleteSuccess}
+        title="Salle supprimée"
+        message="La salle a bien été supprimée."
+        onConfirm={() => {
+          setShowDeleteSuccess(false);
+          onBack();
+        }}
+      />
     </View>
   );
 };
@@ -517,13 +510,13 @@ const styles = StyleSheet.create({
     borderColor: COLORS.accent,
   },
   dateButtonText: {
-    color: COLORS.background,
+    color: COLORS.subtitle,
     fontSize: 12,
     fontWeight: 'bold',
     fontFamily: FONTS.bold,
   },
   dateButtonNumber: {
-    color: COLORS.background,
+    color: COLORS.text,
     fontSize: 16,
     fontWeight: 'bold',
     fontFamily: FONTS.bold,
@@ -776,4 +769,17 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     letterSpacing: 0.5,
   },
+  creatorText: {
+    color: COLORS.text,
+    fontSize: 13,
+    fontFamily: FONTS.regular,
+    marginTop: 6,
+    opacity: 0.7,
+  },
+  deleteIconBtn: {
+    marginLeft: 12,
+    marginTop: 2,
+    padding: 4,
+  },
+
 }); 

@@ -3,6 +3,7 @@ import { View, Image, StyleSheet, Text, TouchableOpacity, ScrollView, Modal } fr
 import * as SecureStore from 'expo-secure-store';
 import { COLORS, FONTS, SIZES } from '../theme';
 import RoomCard from './RoomCard';
+import { Ionicons } from '@expo/vector-icons';
 
 interface RoomsScreenProps {
   onBack: () => void;
@@ -10,6 +11,8 @@ interface RoomsScreenProps {
   onCreateRoom: () => void;
   onGoToLogin: () => void;
   onRoomDetail: (room: Room) => void;
+  onShowMyRooms: () => void;
+  onShowMyReservations: () => void;
 }
 
 interface User {
@@ -27,11 +30,12 @@ interface Room {
   floor?: string;
 }
 
-const RoomsScreen: React.FC<RoomsScreenProps> = ({ onBack, onLogout, onCreateRoom, onGoToLogin, onRoomDetail }) => {
+const RoomsScreen: React.FC<RoomsScreenProps> = ({ onBack, onLogout, onCreateRoom, onGoToLogin, onRoomDetail, onShowMyRooms, onShowMyReservations }) => {
   const [user, setUser] = useState<User | null>(null);
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [rooms, setRooms] = useState<Room[]>([]);
   const [showLoginWarning, setShowLoginWarning] = useState(false);
+  const [showMyRooms, setShowMyRooms] = useState(false);
 
   useEffect(() => {
     const getUser = async () => {
@@ -41,7 +45,6 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ onBack, onLogout, onCreateRoo
           setUser(JSON.parse(userData));
         }
       } catch (error) {
-        console.log('Erreur lors de la récupération des données utilisateur');
       }
     };
     getUser();
@@ -55,10 +58,8 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ onBack, onLogout, onCreateRoo
       if (data.success) {
         setRooms(data.rooms);
       } else {
-        console.log('Erreur lors du chargement des salles');
       }
     } catch (error) {
-      console.log('Erreur lors du chargement des salles:', error);
     }
   };
 
@@ -73,7 +74,6 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ onBack, onLogout, onCreateRoo
       setShowUserMenu(false);
       onLogout();
     } catch (error) {
-      console.log('Erreur lors de la déconnexion');
     }
   };
 
@@ -91,6 +91,16 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ onBack, onLogout, onCreateRoo
 
   const handleRoomPress = (room: Room) => {
     onRoomDetail(room);
+  };
+
+  const handleShowMyRooms = () => {
+    setShowUserMenu(false);
+    onShowMyRooms();
+  };
+
+  const handleShowMyReservations = () => {
+    setShowUserMenu(false);
+    onShowMyReservations();
   };
 
   return (
@@ -146,10 +156,17 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ onBack, onLogout, onCreateRoo
       {/* Fixed User Status - Bottom Right */}
       <TouchableOpacity style={styles.userStatusContainer} onPress={handleUserPress}>
         <View style={styles.userCircle}>
-          <Text style={styles.userInitials}>
-            {user ? getInitials(user.name) : 'U'}
-          </Text>
-          {user && <View style={styles.connectionIndicator} />}
+          {user ? (
+            <Text style={styles.userInitials}>
+              {getInitials(user.name)}
+            </Text>
+          ) : (
+            <Ionicons name="person" size={24} color={COLORS.accent} />
+          )}
+          <View style={[
+            styles.connectionIndicator,
+            user ? styles.connectionIndicatorConnected : styles.connectionIndicatorDisconnected
+          ]} />
         </View>
       </TouchableOpacity>
 
@@ -169,12 +186,33 @@ const RoomsScreen: React.FC<RoomsScreenProps> = ({ onBack, onLogout, onCreateRoo
             <Text style={styles.userMenuTitle}>
               {user ? user.name : 'Utilisateur'}
             </Text>
-            <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
-              <Text style={styles.menuItemText}>Se déconnecter</Text>
-            </TouchableOpacity>
+            {user && (
+              <TouchableOpacity style={styles.menuItem} onPress={handleLogout}>
+                <Text style={styles.menuItemText}>Se déconnecter</Text>
+              </TouchableOpacity>
+            )}
             <TouchableOpacity style={styles.menuItemSecondary} onPress={onGoToLogin}>
-              <Text style={styles.menuItemTextSecondary}>Retour au login</Text>
+              <Text style={styles.menuItemTextSecondary}>
+                {user ? 'Retour au login' : 'Se connecter'}
+              </Text>
             </TouchableOpacity>
+            {user && (
+              <TouchableOpacity style={styles.menuItemSecondary} onPress={handleShowMyRooms}>
+                <Text style={styles.menuItemTextSecondary}>Mes salles</Text>
+              </TouchableOpacity>
+            )}
+            {user && (
+              <TouchableOpacity style={styles.menuItemSecondary} onPress={handleShowMyReservations}>
+                <View style={styles.menuItemWithIcon}>
+                  <Image
+                    source={require('../assets/logo_reza-removebg-preview (1).png')}
+                    style={styles.menuItemIcon}
+                    resizeMode="contain"
+                  />
+                  <Text style={styles.menuItemTextSecondary}>Mes ReZa</Text>
+                </View>
+              </TouchableOpacity>
+            )}
           </View>
         </TouchableOpacity>
       </Modal>
@@ -357,9 +395,14 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     borderRadius: 6,
-    backgroundColor: '#57cc99',
     borderWidth: 2,
     borderColor: COLORS.background,
+  },
+  connectionIndicatorConnected: {
+    backgroundColor: '#57cc99',
+  },
+  connectionIndicatorDisconnected: {
+    backgroundColor: '#ff4444',
   },
   modalOverlay: {
     flex: 1,
@@ -418,6 +461,16 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
     fontFamily: FONTS.bold,
+  },
+  menuItemWithIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  menuItemIcon: {
+    width: 25,
+    height: 25,
+    marginRight: 8,
   },
   warningModal: {
     backgroundColor: COLORS.background,
@@ -488,4 +541,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: FONTS.bold,
   },
-}); 
+});
